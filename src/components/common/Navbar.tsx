@@ -10,7 +10,7 @@ const Navbar: React.FC = () => {
     const result = await signOut();
     if (result.success) {
       router.push("/");
-      console.error("Logout is successful");
+      console.log("Logout is successful");
     }
   };
 
