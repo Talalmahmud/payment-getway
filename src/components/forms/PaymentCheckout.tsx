@@ -17,7 +17,7 @@ const PaymentCheckout = () => {
   };
 
   return (
-    <div className="min-w-[400px] p-6 bg-white shadow-md border-[1px]  border-gray-100 rounded-lg">
+    <div className=" w-full md:min-w-[400px] md:max-w-[400px] p-6 bg-white shadow-md border-[1px]  border-gray-100 rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
         Payment Checkout
       </h2>
