@@ -6,33 +6,29 @@ import { signup } from "@/app/actions"; // Adjust the import path as needed
 interface FormData {
   email: string;
   password: string;
-  role: string;
 }
 
 interface FormErrors {
   email: string;
   password: string;
-  role: string;
 }
 
 const SignUp: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
-    role: "",
   });
 
   const [errors, setErrors] = useState<FormErrors>({
     email: "",
     password: "",
-    role: "",
   });
 
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const validate = (): boolean => {
     let valid = true;
-    let errors: FormErrors = { email: "", password: "", role: "" };
+    let errors: FormErrors = { email: "", password: "" };
 
     if (!formData.email) {
       errors.email = "Email is required";
@@ -47,11 +43,6 @@ const SignUp: React.FC = () => {
       valid = false;
     } else if (formData.password.length < 6) {
       errors.password = "Password must be at least 6 characters";
-      valid = false;
-    }
-
-    if (!formData.role) {
-      errors.role = "Role is required";
       valid = false;
     }
 
@@ -73,7 +64,6 @@ const SignUp: React.FC = () => {
         const formDataObj = new FormData();
         formDataObj.append("email", formData.email);
         formDataObj.append("password", formData.password);
-        formDataObj.append("role", formData.role);
         await signup(formDataObj);
         setSubmitError(null); // Clear any previous errors
       } catch (error) {
@@ -125,21 +115,7 @@ const SignUp: React.FC = () => {
           <span className="text-red-500 text-xs italic">{errors.password}</span>
         )}
       </div>
-      <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          Role:
-        </label>
-        <input
-          type="text"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        {errors.role && (
-          <span className="text-red-500 text-xs italic">{errors.role}</span>
-        )}
-      </div>
+
       <button
         type="submit"
         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
