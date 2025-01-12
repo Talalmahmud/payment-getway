@@ -1,21 +1,36 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import { login } from "@/app/actions"; // Adjust the import path as needed
+import { useRouter } from "next/navigation";
 
-const Login = () => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  email: string;
+  password: string;
+}
+
+interface FormErrors {
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<FormErrors>({
     email: "",
     password: "",
   });
 
-  const validate = () => {
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const router = useRouter();
+
+  const validate = (): boolean => {
     let valid = true;
-    let errors = { email: "", password: "" };
+    let errors: FormErrors = { email: "", password: "" };
 
     if (!formData.email) {
       errors.email = "Email is required";
@@ -37,18 +52,24 @@ const Login = () => {
     return valid;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     if (validate()) {
-      // Submit form
-      console.log("Form submitted", formData);
+      const result = await login(new FormData(e.currentTarget));
+      if (result.success) {
+        router.push("/dashboard"); // Redirect to dashboard
+      } else {
+        setSubmitError(result.error);
+      }
     }
   };
 
@@ -60,6 +81,11 @@ const Login = () => {
       <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
         Login
       </h2>
+      {submitError && (
+        <div className="mb-4 text-red-500 text-sm text-center">
+          {submitError}
+        </div>
+      )}
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Email:
