@@ -273,3 +273,30 @@ export const uploadFileToDocumentsBucket = async (file: File) => {
     throw error;
   }
 };
+
+// payment statistics
+
+export async function getDailyPaymentStatistics() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("payment")
+    .select("amount, created_at");
+
+  if (error) {
+    console.error("Error fetching payments:", error);
+    return [];
+  }
+
+  const statistics = data.reduce((acc: any, payment: any) => {
+    const date = format(new Date(payment.created_at), "dd");
+    if (!acc[date]) {
+      acc[date] = { totalAmount: 0, count: 0, day: date };
+    }
+    acc[date].totalAmount += payment.amount;
+    acc[date].count += 1;
+    return acc;
+  }, {});
+
+  return Object.values(statistics);
+}
